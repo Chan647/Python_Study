@@ -16,8 +16,8 @@ class DB :
         return pymysql.connect(**self.config)
     
     def fetch_sup(self) :
-        sql = "SELECT type, showname, price, inventory FROM Shoes"
-        with self.connect as con :
+        sql = "SELECT type, shoename, price, inventory FROM Shoes ORDER BY type"
+        with self.connect() as con :
             with con.cursor() as cur :
                 cur.execute(sql)
                 return cur.fetchall()
@@ -25,7 +25,7 @@ class DB :
     def insert_sup(self, type, name, money, num) :
         sql = "INSERT INTO Shoes VALUES(%s, %s, %s, %s)"
         try :
-            with self.connect as con :
+            with self.connect() as con :
                 with con.cursor() as cur :
                     cur.execute(sql,(type,name,money,num))
                 con.commit()
@@ -38,7 +38,7 @@ class DB :
     def resume_inv(self, inventory, type) :
         sql = "UPDATE Shoes SET inventory=%s WHERE type=%s"
         try : 
-            with self.connect as con :
+            with self.connect() as con :
                 with con.cursor() as cur :
                     cur.execute(sql,(inventory,type))
                 con.commit()

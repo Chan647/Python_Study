@@ -3,7 +3,7 @@ QLabel, QLineEdit, QPushButton, QMessageBox
 from db_standard import DB, DB_CONFIG
 
 class MainWindow(QMainWindow) :
-    def __ini__(self) :
+    def __init__(self) :
         super().__init__()
         self.setWindowTitle("재고 관리")
         self.db = DB(**DB_CONFIG)
@@ -30,11 +30,11 @@ class MainWindow(QMainWindow) :
         top_box.addWidget(self.input_inventory)
         top_box.addWidget(self.btn_add)
 
-        '''bot_box = QHBoxLayout()
+        bot_box = QHBoxLayout()
         self.btn2_add = QPushButton("수정")
         self.btn2_add.clicked.connect(self.resume_shoes)
 
-        bot_box.addWidget(self.btn2_add)'''
+        bot_box.addWidget(self.btn2_add)
 
         self.table = QTableWidget()
         self.table.setColumnCount(4)
@@ -44,7 +44,7 @@ class MainWindow(QMainWindow) :
 
         vbox.addLayout(top_box)
         vbox.addWidget(self.table)
-        #vbox.addWidget(bot_box)
+        vbox.addLayout(bot_box)
 
         self.load_shoes()
 
@@ -65,6 +65,7 @@ class MainWindow(QMainWindow) :
         num = self.input_inventory.text().strip()
         if not type or not name or not money or not num :
             QMessageBox.warning(self, "오류", "입력창 모두 입력 부탁드립니다")
+            return
 
         cor = self.db.insert_sup(type,name,money,num)
 
@@ -74,9 +75,10 @@ class MainWindow(QMainWindow) :
             self.input_showname.clear()
             self.input_price.clear()
             self.input_inventory.clear()
+            self.load_shoes()
         else :
             QMessageBox(self, "실패", "추가 중 오류가 발생하였습니다.")
-'''
+
     def resume_shoes(self) : 
         r_window = QWidget()
         self.setCentralWidget(r_window)
@@ -86,7 +88,7 @@ class MainWindow(QMainWindow) :
         self.input_rtype = QLineEdit()
         self.input_rinventory = QLineEdit()
         self.btn3_add = QPushButton("수정")
-        self.btn3_add.clicked.connect()
+        self.btn3_add.clicked.connect(self.resume)
 
         box.addWidget(QLabel("종류"))
         box.addWidget(self.input_rtype)
@@ -100,7 +102,7 @@ class MainWindow(QMainWindow) :
         r_type = self.input_rtype.text().strip()
         r_num = self.input_rinventory.text().strip()
 
-        if not r_type or r_num :
+        if not r_type or not r_num :
             QMessageBox.warning(self, "오류", "상품명과 개수를 모두 입력하십시오")
             return
         r_cor = self.db.resume_inv(r_num,r_type)
@@ -112,17 +114,4 @@ class MainWindow(QMainWindow) :
             self.load_shoes()
         else :
             QMessageBox.critical(self, "실패", "수정 중 오류가 발생하였습니다.")
-        
-
-'''
-
-
-
-
-
-
-
-
-
-
-
+    
