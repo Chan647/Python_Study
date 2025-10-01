@@ -23,7 +23,7 @@ class MainWindow(QMainWindow) :
         self.input_inventory.setFixedHeight(30)
         self.btn_add = QPushButton("추가")
         self.btn_add.setFixedSize(100,30)
-        self.btn_add.clicked.connect(self.add_shoes)
+        self.btn_add.clicked.connect(self.add)
 
         top_box.addWidget(QLabel("종류"))
         top_box.addWidget(self.input_type)
@@ -40,7 +40,7 @@ class MainWindow(QMainWindow) :
         self.input_del_type.setFixedHeight(30)
         self.delete_btn = QPushButton("제거")
         self.delete_btn.setFixedSize(100,30)
-        self.delete_btn.clicked.connect(self.delete_shoes) 
+        self.delete_btn.clicked.connect(self.delete) 
 
         mid_box.addWidget(QLabel("종류"))
         mid_box.addWidget(self.input_del_type)
@@ -79,47 +79,6 @@ class MainWindow(QMainWindow) :
             self.table.setItem(r, 2, QTableWidgetItem(str(money)))
             self.table.setItem(r, 3, QTableWidgetItem(str(num)))
         self.table.resizeColumnsToContents()
-
-    def add_shoes(self) :
-        type = self.input_type.text().strip()
-        name = self.input_showname.text().strip()
-        money = self.input_price.text().strip()
-        num = self.input_inventory.text().strip()
-        if not type or not name or not money or not num :
-            QMessageBox.warning(self, "오류", "입력창 모두 입력 부탁드립니다")
-            self.input_type.clear()
-            self.input_showname.clear()
-            self.input_price.clear()
-            self.input_inventory.clear()
-            return
-
-        cor = self.db.insert_sup(type,name,money,num)
-
-        if cor :
-            QMessageBox.information(self, "완료", "성공적으로 추가되었습니다.")
-            self.input_type.clear()
-            self.input_showname.clear()
-            self.input_price.clear()
-            self.input_inventory.clear()
-            self.load_shoes()
-        else :
-            QMessageBox(self, "실패", "추가 중 오류가 발생하였습니다.")
-
-    def delete_shoes(self) :
-        type = self.input_del_type.text().strip()
-        delete = self.db.delete_sup(type)
-        fetch = self.db.fetch_sup()
-
-        if delete :
-            if type != fetch[0] :
-                QMessageBox.warning(self, "오류", "입력한 종류의 신발이 없습니다.")
-                self.input_del_type.clear()
-
-            else :
-                QMessageBox.information(self, "완료", "성공적으로 제거되었습니다.")
-                self.input_del_type.clear()
-                self.load_shoes()
-
 
     def resume_shoes(self) :
             
@@ -181,31 +140,97 @@ class MainWindow(QMainWindow) :
 
         r_vbox.addLayout(box)
         r_vbox.addLayout(u_box) '''
+    
+    def add(self) :
+        type = self.input_type.text().strip()
+        name = self.input_showname.text().strip()
+        money = self.input_price.text().strip()
+        num = self.input_inventory.text().strip()
+
+        if not type or not name or not money or not num :
+            QMessageBox.warning(self, "오류", "입력창 모두 입력 부탁드립니다")
+            self.input_type.clear()
+            self.input_showname.clear()
+            self.input_price.clear()
+            self.input_inventory.clear()
+            return
+        
+        cor = self.db.insert_sup(type,name,money,num)
+
+        if cor :
+            QMessageBox.information(self, "완료", "성공적으로 추가되었습니다.")
+            self.input_type.clear()
+            self.input_showname.clear()
+            self.input_price.clear()
+            self.input_inventory.clear()
+            self.load_shoes()
+        else :
+            QMessageBox(self, "실패", "추가 중 오류가 발생하였습니다.")
+
 
         
-        
-
     def resume(self) :
         r_type = self.input_rtype.text().strip()
         r_num = self.input_rinventory.text().strip()
 
-        fetch = self.db.fetch_sup()
-        r_cor = self.db.resume_inv(r_num,r_type)
-
         if not r_type or not r_num :
             QMessageBox.warning(self, "오류", "상품명과 개수를 모두 입력하십시오")
+            self.input_rtype.clear()
+            self.input_rinventory.clear()
             return
         
-        if r_cor :
-            if fetch[0] != r_type :
-                QMessageBox.warning(self, "오류", "상품명이 올바르지 않습니다.\n 다시 확인 부탁드립니다.")
-            else :
+        rsume = False
+        row = self.db.fetch_sup()
+        for r,(a,b,c,d) in enumerate(row) :
+            if a == r_type :
+                rsume = True    
+                break
+        
+        r_cor = self.db.resume_inv(r_num,r_type)
+
+        if not rsume :
+            QMessageBox.critical(self, "오류", "상품명이 올바르지 않습니다.\n 다시 확인 부탁드립니다.")
+            self.input_rtype.clear()
+            self.input_rinventory.clear()
+        
+        else : 
+            if r_cor :
                 QMessageBox.information(self, "완료", "성공적으로 수정되었습니다.")
                 self.input_rtype.clear()
                 self.input_rinventory.clear()
                 self.load_shoes()
+            else :
+                QMessageBox.critical(self, "실패", "오류가 발생하였습니다.")
+                self.load_shoes()
+
+    def delete(self) :
+        type = self.input_del_type.text().strip()
+        
+        rsume = False
+        row = self.db.fetch_sup()
+        for r, (a,b,c,d) in enumerate(row) :
+            if a == type :
+                rsume = True
+                break
+            
+        delete = self.db.delete_sup(type)
+
+        if not rsume :
+            QMessageBox.critical(self, "오류", "입력한 종류의 신발이 없습니다.\n 올바른 종류를 입력하십시오")
+            self.input_del_type.clear()
+            self.load_shoes()
+
         else :
-            QMessageBox.critical(self, "실패", "수정 중 오류가 발생하였습니다.")
+            if delete :
+                QMessageBox.information(self, "완료", "성공적으로 제거되었습니다.")
+                delete
+                self.input_del_type.clear()
+                self.load_shoes()
+                
+            else :
+                QMessageBox.critical(self, "실패", "오류가 발생하였습니다.")
+                self.load_shoes()
+
 
         
     
