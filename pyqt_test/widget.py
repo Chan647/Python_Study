@@ -1,5 +1,6 @@
 from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QTableWidget, QTableWidgetItem, \
 QLabel, QLineEdit, QPushButton, QMessageBox, QFormLayout, QDialog
+from PyQt5.QtGui import QColor
 from db_standard import DB, DB_CONFIG
 
 class MainWindow(QMainWindow) :
@@ -62,6 +63,7 @@ class MainWindow(QMainWindow) :
         self.table.setHorizontalHeaderLabels(["종류","상품명","가격","재고"])
         self.table.setEditTriggers(self.table.NoEditTriggers)
         self.table.verticalHeader().setVisible(False)
+        
 
         vbox.addLayout(top_box)
         vbox.addLayout(mid_box)
@@ -79,6 +81,12 @@ class MainWindow(QMainWindow) :
             self.table.setItem(r, 2, QTableWidgetItem(str(money)))
             self.table.setItem(r, 3, QTableWidgetItem(str(num)))
         self.table.resizeColumnsToContents()
+        self.table.setColumnWidth(0, 80)
+        self.table.setColumnWidth(1, 100)
+        self.table.setColumnWidth(2, 100)
+        self.table.setColumnWidth(3, 50)
+
+        self.change_color()
 
     def resume_shoes(self) :
             
@@ -230,4 +238,17 @@ class MainWindow(QMainWindow) :
             else :
                 QMessageBox.critical(self, "실패", "오류가 발생하였습니다.")
                 self.load_shoes()
+
+    def change_color(self) :
+        for row in range(self.table.rowCount()):
+            item = self.table.item(row, 3)
+            trans = int(item.text())
+            if trans >= 5 :
+                for col in range(self.table.columnCount()):
+                    con = self.table.item(row, col)
+                    if con :
+                        con.setBackground(QColor("red"))
+                    
+
+
 
