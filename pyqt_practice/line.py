@@ -14,7 +14,6 @@ class Window(QMainWindow, form_class) :
         # print(self.lineEdit.text())
         self.lineEdit.setPlaceholderText("여기에 입력하세요")
 
-
 if __name__ == "__main__" :
     app = QApplication(sys.argv)
     myWindow = Window()

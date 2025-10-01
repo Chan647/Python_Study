@@ -20,7 +20,6 @@ class Window(QMainWindow):
         window.setLayout(layout)
         self.setCentralWidget(window)
 
-
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     myWindow = Window()
