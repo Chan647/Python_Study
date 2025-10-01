@@ -156,7 +156,7 @@ class MainWindow(QMainWindow) :
         num = self.input_inventory.text().strip()
 
         if not type or not name or not money or not num :
-            QMessageBox.warning(self, "오류", "입력창 모두 입력 부탁드립니다")
+            QMessageBox.warning(self, "오류", "모두 입력하십시오.")
             self.input_type.clear()
             self.input_showname.clear()
             self.input_price.clear()
@@ -197,7 +197,7 @@ class MainWindow(QMainWindow) :
         r_cor = self.db.resume_inv(r_num,r_type)
 
         if not rsume :
-            QMessageBox.critical(self, "오류", "상품명이 올바르지 않습니다.\n 다시 확인 부탁드립니다.")
+            QMessageBox.critical(self, "오류", "상품명이 올바르지 않습니다.\n 확인 후 기입하십시오.")
             self.input_rtype.clear()
             self.input_rinventory.clear()
         
@@ -224,7 +224,7 @@ class MainWindow(QMainWindow) :
         delete = self.db.delete_sup(type)
 
         if not rsume :
-            QMessageBox.critical(self, "오류", "입력한 종류의 신발이 없습니다.\n 올바른 종류를 입력하십시오")
+            QMessageBox.critical(self, "오류", "입력한 종류의 신발이 없습니다.\n 올바른 상품명을 입력하십시오")
             self.input_del_type.clear()
             self.load_shoes()
 
