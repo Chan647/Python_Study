@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QDialog, QVBoxLayout, QFormLayout, QLineEdit, QPushButton, QMessageBox
+from PyQt5.QtWidgets import QDialog, QVBoxLayout, QFormLayout, QLineEdit, QPushButton, QMessageBox, QHBoxLayout
 from db_standard import DB, DB_CONFIG
 
 class Login(QDialog) :
@@ -19,11 +19,15 @@ class Login(QDialog) :
 
           self.btn_login = QPushButton("로그인")
           self.btn_login.setFixedSize(300,30)
+          self.ap_login = QPushButton("회원가입")
+          self.ap_login.setFixedSize(300,30)
           self.btn_login.clicked.connect(self.t_login)
+          self.ap_login.clicked.connect(self.append_user)
 
           layout = QVBoxLayout()
           layout.addLayout(form)
           layout.addWidget(self.btn_login)
+          layout.addWidget(self.ap_login)
           self.setLayout(layout)
 
      def t_login(self) :
@@ -40,4 +44,55 @@ class Login(QDialog) :
                self.accept()
           else :
                QMessageBox.critical(self, "실패", "아이디 혹은 비밀번호가 올바르지 않습니다.")
+
+     def append_user(self) :
+          title = QDialog(self)
+          title.setWindowTitle("회원 가입")
+
+          form =QFormLayout()
+          self.append_type = QLineEdit()
+          self.append_type.setFixedSize(200,40)
+          self.append_inventory = QLineEdit()
+          self.append_inventory.setFixedSize(200,40)
+
+          form.addRow("아이디", self.append_type)
+          form.addRow("비밀번호", self.append_inventory)
+
+          bac_btn = QPushButton("뒤로 가기")
+          bac_btn.setFixedSize(100, 40)
+          bac_btn.clicked.connect(title.reject)
+          cpt_btn = QPushButton("완료")
+          cpt_btn.setFixedSize(100, 40)
+          cpt_btn.clicked.connect(lambda: self.cpt(title))
+
+          btns = QHBoxLayout()
+          btns.addStretch()
+          btns.addWidget(bac_btn)
+          btns.addWidget(cpt_btn)
+
+          root = QVBoxLayout()
+          root.addLayout(form)
+          root.addLayout(btns)
+          title.setLayout(root)
+
+          title.exec_()
+
+     def cpt(self,dialog) :
+        id = self.append_type.text().strip()
+        pw = self.append_inventory.text().strip()
+
+        if not id or not pw:
+          QMessageBox.warning(self, "오류", "아이디와 비밀번호를 모두 입력하세요.")
+          return
+
+        ok = self.db.insert_user(id,pw)
+        if ok :
+          QMessageBox.information(self, "완료", "회원가입이 성공적으로 처리되었습니다.")
+          self.append_type.clear()
+          self.append_inventory.clear()
+          dialog.accept() 
+
+
+
+
           
