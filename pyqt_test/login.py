@@ -41,5 +41,3 @@ class Login(QDialog) :
           else :
                QMessageBox.critical(self, "실패", "아이디 혹은 비밀번호가 올바르지 않습니다.")
           
-           
-

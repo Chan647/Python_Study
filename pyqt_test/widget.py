@@ -231,6 +231,3 @@ class MainWindow(QMainWindow) :
                 QMessageBox.critical(self, "실패", "오류가 발생하였습니다.")
                 self.load_shoes()
 
-
-        
-    

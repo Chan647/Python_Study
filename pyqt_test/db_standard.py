@@ -68,7 +68,3 @@ class DB :
         except Exception :
             con.rollback()
             return False
-
-
-
-
