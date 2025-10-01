@@ -38,3 +38,4 @@ if __name__ == "__main__":
     myWindow = Window()
     myWindow.show()
     app.exec_()
+    

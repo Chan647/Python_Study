@@ -18,7 +18,6 @@ class Window(QMainWindow, form_class) :
         self.textEdit.clear()
         
 
-
 if __name__ == "__main__" :
     app = QApplication(sys.argv)
     myWindow = Window()

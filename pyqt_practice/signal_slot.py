@@ -22,7 +22,6 @@ class Window(QMainWindow, form_class):
 
        self.textEdit.setStyleSheet(f"background-color: rgb({r},{g},{b})")
 
-
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     myWindow = Window()
