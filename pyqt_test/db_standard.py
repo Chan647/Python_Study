@@ -68,3 +68,15 @@ class DB :
         except Exception :
             con.rollback()
             return False
+    def insert_user(self, usname, psword) :
+        sql = "INSERT INTO users(username,password) VALUES(%s, %s)"
+        try :
+            with self.connect() as con :
+                with con.cursor() as cur :
+                    cur.execute(sql,(usname,psword))
+                con.commit()
+                return True
+            
+        except Exception :
+            con.rollback()
+            return False
