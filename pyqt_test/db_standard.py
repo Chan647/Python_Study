@@ -55,6 +55,19 @@ class DB :
                 cur.execute(sql,(username,password))
                 count, = cur.fetchone()
                 return count == 1
+            
+    def delete_sup(self,type):
+        sql = "DELETE FROM Shoes where type=%s"
+        try :
+            with self.connect() as con :
+                with con.cursor() as cur :
+                    cur.execute(sql,(type))
+                con.commit()
+                return True
+            
+        except Exception :
+            con.rollback()
+            return False
 
 
 
