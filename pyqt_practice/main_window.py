@@ -58,3 +58,4 @@ class MainWindow(QMainWindow):
             self.load_members()
         else :
             QMessageBox.critical(self, "실패", "추가중 오류가 발생하였습니다.")
+            
