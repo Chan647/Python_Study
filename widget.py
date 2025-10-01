@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QTableWidget, QTableWidgetItem, \
-QLabel, QLineEdit, QPushButton, QMessageBox
+QLabel, QLineEdit, QPushButton, QMessageBox, QFormLayout, QDialog
 from db_standard import DB, DB_CONFIG
 
 class MainWindow(QMainWindow) :
@@ -8,9 +8,9 @@ class MainWindow(QMainWindow) :
         self.setWindowTitle("재고 관리")
         self.db = DB(**DB_CONFIG)
     
-        window = QWidget()
-        self.setCentralWidget(window)   
-        vbox = QVBoxLayout(window)
+        self.window = QWidget()
+        self.setCentralWidget(self.window)   
+        vbox = QVBoxLayout(self.window)
 
         top_box = QHBoxLayout()
         self.input_type = QLineEdit()
@@ -31,10 +31,15 @@ class MainWindow(QMainWindow) :
         top_box.addWidget(self.btn_add)
 
         bot_box = QHBoxLayout()
-        self.btn2_add = QPushButton("수정")
-        self.btn2_add.clicked.connect(self.resume_shoes)
+        self.btn2 = QPushButton("수정")
+        self.btn2.setFixedSize(400,40)
+        self.btn2.clicked.connect(self.resume_shoes)
+        self.btn_suc = QPushButton("완료")
+        self.btn_suc.setFixedSize(400,40)
+        self.btn_suc.clicked.connect(self.close)
 
-        bot_box.addWidget(self.btn2_add)
+        bot_box.addWidget(self.btn2)
+        bot_box.addWidget(self.btn_suc)
 
         self.table = QTableWidget()
         self.table.setColumnCount(4)
@@ -79,7 +84,41 @@ class MainWindow(QMainWindow) :
         else :
             QMessageBox(self, "실패", "추가 중 오류가 발생하였습니다.")
 
-    def resume_shoes(self) : 
+    def resume_shoes(self) :
+            
+        title = QDialog(self)
+        title.setWindowTitle("재고 수정")
+
+        form =QFormLayout()
+        self.input_rtype = QLineEdit()
+        self.input_rtype.setFixedSize(200,40)
+        self.input_rinventory = QLineEdit()
+        self.input_rinventory.setFixedSize(200,40)
+
+        form.addRow("종류", self.input_rtype)
+        form.addRow("재고", self.input_rinventory)
+
+        back_btn = QPushButton("뒤로 가기")
+        back_btn.setFixedSize(100, 40)
+        back_btn.clicked.connect(title.reject)
+        resume_btn = QPushButton("수정")
+        resume_btn.setFixedSize(100, 40)
+        resume_btn.clicked.connect(self.resume)
+
+        btns = QHBoxLayout()
+        btns.addStretch()
+        btns.addWidget(back_btn)
+        btns.addWidget(resume_btn)
+
+        root = QVBoxLayout()
+        root.addLayout(form)
+        root.addLayout(btns)
+        title.setLayout(root)
+
+        title.exec_()
+
+            
+    '''def resume_shoes(self) : 
         r_window = QWidget()
         self.setCentralWidget(r_window)
         r_vbox = QVBoxLayout(r_window)
@@ -87,31 +126,49 @@ class MainWindow(QMainWindow) :
         box = QVBoxLayout()
         self.input_rtype = QLineEdit()
         self.input_rinventory = QLineEdit()
-        self.btn3_add = QPushButton("수정")
-        self.btn3_add.clicked.connect(self.resume)
-
+        
         box.addWidget(QLabel("종류"))
         box.addWidget(self.input_rtype)
         box.addWidget(QLabel("재고"))
         box.addWidget(self.input_rinventory)
-        box.addWidget(self.btn3_add)
+       
+
+        u_box = QHBoxLayout()
+        self.btn3_add = QPushButton("수정")
+        self.btn3_add.clicked.connect(self.resume)
+        self.btn4_add = QPushButton("뒤로가기")
+        self.btn4_add.clicked.connect(self.back)
+
+        u_box.addWidget(self.btn3_add)
+        u_box.addWidget(self.btn4_add)
 
         r_vbox.addLayout(box)
+        r_vbox.addLayout(u_box) '''
+
+        
+        
 
     def resume(self) :
         r_type = self.input_rtype.text().strip()
         r_num = self.input_rinventory.text().strip()
 
+        fetch = self.db.fetch_sup()
+        r_cor = self.db.resume_inv(r_num,r_type)
+
         if not r_type or not r_num :
             QMessageBox.warning(self, "오류", "상품명과 개수를 모두 입력하십시오")
             return
-        r_cor = self.db.resume_inv(r_num,r_type)
-
+        
         if r_cor :
-            QMessageBox.information(self, "완료", "성공적으로 수정되었습니다.")
-            self.input_rtype.clear()
-            self.input_rinventory.clear()
-            self.load_shoes()
+            if fetch[0] != r_type :
+                QMessageBox.warning(self, "오류", "상품명이 올바르지 않습니다.\n 다시 확인 부탁드립니다.")
+            else :
+                QMessageBox.information(self, "완료", "성공적으로 수정되었습니다.")
+                self.input_rtype.clear()
+                self.input_rinventory.clear()
+                self.load_shoes()
         else :
             QMessageBox.critical(self, "실패", "수정 중 오류가 발생하였습니다.")
+
+        
     

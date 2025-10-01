@@ -47,6 +47,14 @@ class DB :
         except Exception :
             con.rollback()
             return False
+    
+    def verify_user(self, username, password):
+        sql = "SELECT COUNT(*) FROM users WHERE username=%s AND password=%s"
+        with self.connect() as conn:
+            with conn.cursor() as cur:
+                cur.execute(sql,(username,password))
+                count, = cur.fetchone()
+                return count == 1
 
 
 
