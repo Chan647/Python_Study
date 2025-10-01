@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QTableWidget, QTableWidgetItem, \
 QLabel, QLineEdit, QPushButton, QMessageBox, QFormLayout, QDialog
-from PyQt5.QtGui import QColor
+from PyQt5.QtGui import QColor, QFont
 from db_standard import DB, DB_CONFIG
 
 class MainWindow(QMainWindow) :
@@ -247,7 +247,11 @@ class MainWindow(QMainWindow) :
                 for col in range(self.table.columnCount()):
                     con = self.table.item(row, col)
                     if con :
+                        font = QFont()
+                        font.setWeight(99)
+                        font.setPointSize(12)
                         con.setBackground(QColor("red"))
+                        con.setFont(font)
                     
 
 
