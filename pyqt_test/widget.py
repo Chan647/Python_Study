@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QTableWidget, QTableWidgetItem, \
 QLabel, QLineEdit, QPushButton, QMessageBox, QFormLayout, QDialog
-from PyQt5.QtGui import QColor, QFont
+from PyQt5.QtGui import QColor, QFont, QIcon
 from db_standard import DB, DB_CONFIG
 
 class MainWindow(QMainWindow) :
@@ -8,6 +8,7 @@ class MainWindow(QMainWindow) :
         super().__init__()
         self.setWindowTitle("재고 관리")
         self.db = DB(**DB_CONFIG)
+        self.setWindowIcon(QIcon("C:/python_code_Lee/pyqt_test/shoe.png"))
     
         self.window = QWidget()
         self.setCentralWidget(self.window)   
