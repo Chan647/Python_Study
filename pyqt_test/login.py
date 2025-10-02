@@ -86,6 +86,7 @@ class Login(QDialog) :
           return
 
         ok = self.db.insert_user(id,pw)
+
         if ok :
           QMessageBox.information(self, "완료", "회원가입이 성공적으로 처리되었습니다.")
           self.append_type.clear()
