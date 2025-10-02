@@ -252,7 +252,4 @@ class MainWindow(QMainWindow) :
                         font.setPointSize(12)
                         con.setBackground(QColor("red"))
                         con.setFont(font)
-                    
-
-
 
